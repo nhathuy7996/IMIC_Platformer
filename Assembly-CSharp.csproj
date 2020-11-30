@@ -64,8 +64,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\00 SCRIPT\Bullet.cs" />
+    <Compile Include="Assets\00 SCRIPT\BulletPooling.cs" />
+    <Compile Include="Assets\00 SCRIPT\Enemy_base.cs" />
     <Compile Include="Assets\00 SCRIPT\GunController.cs" />
+    <Compile Include="Assets\00 SCRIPT\ObjectPooling_base.cs" />
     <Compile Include="Assets\00 SCRIPT\PlayerController.cs" />
+    <Compile Include="Assets\00 SCRIPT\Singleton.cs" />
     <Reference Include="UnityEngine">
       <HintPath>D:/UNITY_EDITOR/2019.3.15f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

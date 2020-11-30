@@ -5,7 +5,7 @@ using UnityEngine;
 public class GunController : MonoBehaviour
 {
     [SerializeField] GameObject Bullet;
-    [SerializeField] float FireDelay = 0.3f,LifeTime = 3,Daamage = 10;
+    [SerializeField] float FireDelay = 0.3f,Daamage = 10;
     float CountDownTimer = 0;
     [SerializeField] Vector2 ForceBullet = Vector2.zero;
     
@@ -19,10 +19,11 @@ public class GunController : MonoBehaviour
     {
         if (CountDownTimer > 0)
             return;
-        GameObject tmp = Instantiate(Bullet,this.transform.position,Quaternion.identity);
-        tmp.GetComponent<Rigidbody2D>().AddForce(direction * ForceBullet);
+        GameObject tmp = BulletPooling.instant.GetObj();
+        tmp.transform.position = this.transform.position;
         tmp.GetComponent<Bullet>().DMG = Daamage;
-        Destroy(tmp, LifeTime);
+        tmp.SetActive(true);
+        tmp.GetComponent<Rigidbody2D>().AddForce(direction * ForceBullet);
         CountDownTimer = FireDelay;
     }
 }

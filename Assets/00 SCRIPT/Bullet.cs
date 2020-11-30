@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    public float LifeTIme = 3;
     [SerializeField] float _DMG;
     public float DMG
     {
@@ -17,9 +18,38 @@ public class Bullet : MonoBehaviour
         }
 
     }
-     private void OnTriggerEnter2D(Collider2D collision)
+
+    TrailRenderer Trail;
+
+    private void Awake()
     {
-        Destroy(this.gameObject);
+        Trail = this.GetComponent<TrailRenderer>();
+    }
+
+    private void OnEnable()
+    {
+        Invoke("Deactive",LifeTIme);
+    }
+
+    private void OnDisable()
+    {
+        
+    }
+
+    void Deactive()
+    {
+
+        this.gameObject.SetActive(false);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Enemy")
+        {
+            collision.GetComponent<Enemy_base>().GetDamage(this);
+        }
+        this.gameObject.SetActive(false);
+        
     }
 }
 
