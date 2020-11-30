@@ -63,9 +63,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\00 SCRIPT\Bullet.cs" />
     <Compile Include="Assets\00 SCRIPT\BulletPooling.cs" />
+    <Compile Include="Assets\00 SCRIPT\Bullet_base.cs" />
+    <Compile Include="Assets\00 SCRIPT\EnemyPooling.cs" />
     <Compile Include="Assets\00 SCRIPT\Enemy_base.cs" />
+    <Compile Include="Assets\00 SCRIPT\GameController.cs" />
     <Compile Include="Assets\00 SCRIPT\GunController.cs" />
     <Compile Include="Assets\00 SCRIPT\ObjectPooling_base.cs" />
     <Compile Include="Assets\00 SCRIPT\PlayerController.cs" />

@@ -19,11 +19,13 @@ public class GunController : MonoBehaviour
     {
         if (CountDownTimer > 0)
             return;
+        
         GameObject tmp = BulletPooling.instant.GetObj();
         tmp.transform.position = this.transform.position;
-        tmp.GetComponent<Bullet>().DMG = Daamage;
+        //tmp.GetComponent<Bullet>().DMG = Daamage;
         tmp.SetActive(true);
-        tmp.GetComponent<Rigidbody2D>().AddForce(direction * ForceBullet);
+
+        tmp.GetComponent<Rigidbody2D>().velocity = direction * ForceBullet;
         CountDownTimer = FireDelay;
     }
 }
