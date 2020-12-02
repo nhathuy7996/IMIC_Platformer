@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GunController Gun;
     string _current_Ground = "";
     public string current_ground => _current_Ground;
+    //[SerializeField] Transform Cam;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +24,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         DefineState();
         Control_MOve();
         if (Input.GetMouseButton(0))

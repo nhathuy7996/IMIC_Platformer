@@ -94,8 +94,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 100
-  Speed: {x: 30, y: 0}
-  Player: {fileID: 0}
+  Atk_range: 5.09
+  Speed: {x: 50, y: 0}
+  dir: 1
+  offset: {x: 0, y: 0.5}
+  IsChasePlayer: 0
 --- !u!1 &6591534768170285424
 GameObject:
   m_ObjectHideFlags: 0
