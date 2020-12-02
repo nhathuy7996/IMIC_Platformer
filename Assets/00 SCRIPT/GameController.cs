@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class GameController : Singleton<GameController>
 {
-    [SerializeField] GameObject _Player;
-    public GameObject Player => _Player;
+    [SerializeField] PlayerController _Player;
+    public PlayerController Player => _Player;
+    
     // Start is called before the first frame update
     void Start()
     {

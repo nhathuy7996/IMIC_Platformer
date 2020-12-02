@@ -6,12 +6,13 @@ public class Enemy_base : MonoBehaviour
 {
     [SerializeField] float HP = 100, Atk_range = 10;
     [SerializeField] Vector2 Speed;
-    GameObject Player;
+    PlayerController Player;
     [SerializeField]float dir = 1;
     Rigidbody2D Rigi;
     [SerializeField] Vector2 offset = new Vector2(0,0.5f);
     Collider2D Colli;
     [SerializeField] bool IsChasePlayer = false;
+    string Current_platform;
 
     private void OnEnable()
     {
@@ -36,6 +37,12 @@ public class Enemy_base : MonoBehaviour
 
     void Move()
     {
+        
+        if (Mathf.Abs(this.transform.position.x- Player.transform.position.x) <= 1)
+        {
+            return;
+        }
+
         if(IsChasePlayer)
             this.dir = this.transform.position.x > Player.transform.position.x ? -1 : 1;
 
@@ -58,12 +65,17 @@ public class Enemy_base : MonoBehaviour
         }
         else
         {
+            Current_platform = hit.collider.gameObject.name;
             return true;
         }
     }
 
     void CheckTarget()
     {
+        if(Current_platform != Player.current_ground)
+        {
+            return;
+        }
         if (Vector2.Distance(Player.transform.position, this.transform.position) > Atk_range)
         {
             IsChasePlayer = false;

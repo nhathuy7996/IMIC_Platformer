@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     Animator Anim_Control;
     [SerializeField] PlayerState STATE = PlayerState.IDLE;
     [SerializeField] GunController Gun;
+    string _current_Ground = "";
+    public string current_ground => _current_Ground;
 
     // Start is called before the first frame update
     void Start()
@@ -106,6 +108,7 @@ public class PlayerController : MonoBehaviour
         {
             IsGround = true;
             IsDoubleJump = false;
+            _current_Ground = collision.collider.name;
         }
     }
 
