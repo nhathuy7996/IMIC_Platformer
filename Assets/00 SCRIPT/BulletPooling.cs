@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class BulletPooling : ObjectPooling_base<BulletPooling>
 {
-    
+    public List<GameObject> PoolBullet => Pool;
 }

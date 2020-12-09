@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GunController Gun;
     string _current_Ground = "";
     public string current_ground => _current_Ground;
+    [SerializeField] float fallMultipler = 1.5f;
     //[SerializeField] Transform Cam;
 
     // Start is called before the first frame update
@@ -27,6 +28,8 @@ public class PlayerController : MonoBehaviour
         
         DefineState();
         Control_MOve();
+        BetterJUmp();
+        
         if (Input.GetMouseButton(0))
         {
             float dir = this.transform.localScale.x > 0 ? 1 : -1;
@@ -52,20 +55,30 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            
             if (IsGround)
             {
                 //Jump lan 1
-                Rigi.AddForce(new Vector2(0, Speed.y));
+                Rigi.velocity = new Vector2(Rigi.velocity.x, Speed.y);
                 IsGround = false;
                 return;
             }
 
             if (!IsDoubleJump)
             {
-                Rigi.AddForce(new Vector2(0, Speed.y));
+
+                Rigi.velocity = new Vector2(Rigi.velocity.x, Speed.y * 1.2f);
                 IsDoubleJump = true;
             }
+            Debug.LogError(Rigi.velocity.y);
+        }
+    }
 
+    void BetterJUmp()
+    {
+        if (Rigi.velocity.y < 0)
+        {
+            Rigi.velocity += Vector2.up * Physics2D.gravity.y * fallMultipler * Time.deltaTime;
         }
     }
 

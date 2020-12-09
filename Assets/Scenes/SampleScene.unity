@@ -1687,7 +1687,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1035238901}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.09, y: -0.8, z: -0.15303501}
+  m_LocalPosition: {x: 4.53, y: -0.8, z: -0.15303501}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 597183949}
@@ -1754,11 +1754,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f1723b6da0e0084eaa0bb50c33935fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: {x: 2, y: 500}
+  Speed: {x: 2, y: 5}
   IsGround: 0
   IsDoubleJump: 0
   STATE: 0
   Gun: {fileID: 240472150}
+  fallMultipler: 1.5
 --- !u!95 &1035238907
 Animator:
   serializedVersion: 3
@@ -1997,13 +1998,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1376947000}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 18.16, y: -3.59, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 0.22794323, w: 0.9736745}
+  m_LocalPosition: {x: 15.1, y: -1.48, z: 0}
   m_LocalScale: {x: 10, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 26.352001}
 --- !u!1 &1466739928
 GameObject:
   m_ObjectHideFlags: 0

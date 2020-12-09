@@ -115,4 +115,5 @@ public class Enemy_base : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(this.transform.position, Atk_range);
     }
+
 }

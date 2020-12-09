@@ -37,7 +37,7 @@ public class CameraControll : MonoBehaviour
         {
             pos.y = FreeZone.y;
         }
-        Debug.LogError(pos.x + "||" + FreeZone.x);
+
         pos.z = this.transform.position.z;
         this.transform.position = pos;
     }

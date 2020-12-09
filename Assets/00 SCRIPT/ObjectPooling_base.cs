@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ObjectPooling_base<T> : Singleton<T> where T: MonoBehaviour 
 {
-    [SerializeField] List<GameObject> Pool = new List<GameObject>();
+    [SerializeField] protected List<GameObject> Pool = new List<GameObject>();
     [SerializeField] GameObject obj_Prefab;
 
 
