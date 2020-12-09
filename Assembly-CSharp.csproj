@@ -71,6 +71,7 @@
     <Compile Include="Assets\00 SCRIPT\Enemy_base.cs" />
     <Compile Include="Assets\00 SCRIPT\GameController.cs" />
     <Compile Include="Assets\00 SCRIPT\GunController.cs" />
+    <Compile Include="Assets\00 SCRIPT\MovingPlatform.cs" />
     <Compile Include="Assets\00 SCRIPT\ObjectPooling_base.cs" />
     <Compile Include="Assets\00 SCRIPT\Paralax.cs" />
     <Compile Include="Assets\00 SCRIPT\PlayerController.cs" />

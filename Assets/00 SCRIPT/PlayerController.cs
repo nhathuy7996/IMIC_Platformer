@@ -6,20 +6,23 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] Vector2 Speed;
     Rigidbody2D Rigi;
-    [SerializeField] bool IsGround = true, IsDoubleJump = false;
+    [SerializeField] bool IsGround = true, IsDoubleJump = false, IsSlope = false,IsMovingPlatfrom = false;
     Animator Anim_Control;
     [SerializeField] PlayerState STATE = PlayerState.IDLE;
     [SerializeField] GunController Gun;
     string _current_Ground = "";
     public string current_ground => _current_Ground;
     [SerializeField] float fallMultipler = 1.5f;
-    //[SerializeField] Transform Cam;
+    Vector2 Movement, Perpend;
+    float Inputx;
+    Collider2D Colli;
 
     // Start is called before the first frame update
     void Start()
     {
         Rigi = this.GetComponent<Rigidbody2D>();
         Anim_Control = this.GetComponent<Animator>();
+        Colli = this.GetComponent<Collider2D>();
     }
 
     // Update is called once per frame
@@ -29,7 +32,7 @@ public class PlayerController : MonoBehaviour
         DefineState();
         Control_MOve();
         BetterJUmp();
-        
+        DetectPlatform();
         if (Input.GetMouseButton(0))
         {
             float dir = this.transform.localScale.x > 0 ? 1 : -1;
@@ -42,16 +45,20 @@ public class PlayerController : MonoBehaviour
         if (Input.GetAxisRaw("Horizontal") == 1)
         {
             //Di chuyen phai
-            this.transform.position += new Vector3(Speed.x * Time.deltaTime, 0, 0);
+            Transform parent = this.transform.parent;
+            this.transform.SetParent(null);
             this.transform.localScale = new Vector3(1, 1, 0);
+            this.transform.SetParent(parent);
         }
         else if (Input.GetAxisRaw("Horizontal") == -1)
         {
             //Di chuyen trai
-            this.transform.position += new Vector3(-Speed.x * Time.deltaTime, 0, 0);
+            Transform parent = this.transform.parent;
+            this.transform.SetParent(null);
             this.transform.localScale = new Vector3(-1, 1, 0);
+            this.transform.SetParent(parent);
         }
-
+        Inputx = Input.GetAxisRaw("Horizontal");
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -74,8 +81,65 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void DetectPlatform()
+    {
+        RaycastHit2D[] hits = new RaycastHit2D[10];
+        Colli.Cast(Vector2.down, hits,0.5f);
+
+        CheckSlope(hits);
+        CheckPlatform(hits);
+    }
+
+    void CheckPlatform(RaycastHit2D[] hits)
+    {
+        foreach (RaycastHit2D h in hits)
+        {
+            if (h.collider == null)
+                continue;
+            if (h.collider.tag != "MovingPlatform")
+                continue;
+            IsMovingPlatfrom = true;
+            this.transform.SetParent(h.transform);
+            return;
+        }
+        this.transform.SetParent(null);
+        IsMovingPlatfrom = false;
+    }
+
+    void CheckSlope(RaycastHit2D[] hits)
+    {
+        foreach (RaycastHit2D h in hits)
+        {
+            if (h.collider == null)
+                continue;
+            if (h.normal == Vector2.up)
+                continue;
+            IsSlope = true;
+            Perpend = Vector2.Perpendicular(h.normal).normalized;
+            Debug.DrawRay(h.point, h.normal, Color.red);
+            return;  
+        }
+        IsSlope = false;
+    }
+
     void BetterJUmp()
     {
+        if (IsGround)
+        {
+            if (!IsSlope)
+            {
+                Movement.Set(Inputx * Speed.x, Rigi.velocity.y);
+            }
+            else if (IsSlope)
+            {
+                Movement.Set(-Inputx * Speed.x * Perpend.x, -Inputx * Speed.y * Perpend.y);
+            }
+        }else if (!IsGround)
+        {
+            Movement.Set(Inputx * Speed.x, Rigi.velocity.y);
+        }
+        
+        Rigi.velocity = Movement;
         if (Rigi.velocity.y < 0)
         {
             Rigi.velocity += Vector2.up * Physics2D.gravity.y * fallMultipler * Time.deltaTime;
@@ -119,7 +183,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Ground")
+        if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "MovingPlatform")
         {
             IsGround = true;
             IsDoubleJump = false;
