@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] Vector2 Speed;
+    [SerializeField] Vector2 Speed, CheckWallOffset, OffsetClimb;
+
     Rigidbody2D Rigi;
-    [SerializeField] bool IsGround = true, IsDoubleJump = false, IsSlope = false,IsMovingPlatfrom = false;
+    [SerializeField] bool IsGround = true, IsDoubleJump = false, IsSlope = false,IsMovingPlatfrom = false, IsWall = false,IsHang = false;
     Animator Anim_Control;
     [SerializeField] PlayerState STATE = PlayerState.IDLE;
     [SerializeField] GunController Gun;
@@ -33,6 +34,9 @@ public class PlayerController : MonoBehaviour
         Control_MOve();
         BetterJUmp();
         DetectPlatform();
+        IsWall = CheckWall();
+        ReduceGravity();
+        CheckHang();
         if (Input.GetMouseButton(0))
         {
             float dir = this.transform.localScale.x > 0 ? 1 : -1;
@@ -45,6 +49,8 @@ public class PlayerController : MonoBehaviour
         if (Input.GetAxisRaw("Horizontal") == 1)
         {
             //Di chuyen phai
+            if(IsHang)
+                STATE = PlayerState.CLIMB;
             Transform parent = this.transform.parent;
             this.transform.SetParent(null);
             this.transform.localScale = new Vector3(1, 1, 0);
@@ -53,6 +59,8 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetAxisRaw("Horizontal") == -1)
         {
             //Di chuyen trai
+            if (IsHang)
+                STATE = PlayerState.CLIMB;
             Transform parent = this.transform.parent;
             this.transform.SetParent(null);
             this.transform.localScale = new Vector3(-1, 1, 0);
@@ -62,7 +70,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            
+           
             if (IsGround)
             {
                 //Jump lan 1
@@ -73,12 +81,28 @@ public class PlayerController : MonoBehaviour
 
             if (!IsDoubleJump)
             {
-
                 Rigi.velocity = new Vector2(Rigi.velocity.x, Speed.y * 1.2f);
                 IsDoubleJump = true;
-            }
-            Debug.LogError(Rigi.velocity.y);
+            } 
         }
+    }
+
+    void ReduceGravity()
+    {
+        if (IsHang)
+        {
+            Rigi.gravityScale = 0;
+            return;
+        }
+            
+        Rigi.gravityScale = 1;
+        if (!IsWall)
+            return;
+        if (IsGround)
+            return;
+
+        Rigi.velocity = new Vector2(Rigi.velocity.x,0);
+        Rigi.gravityScale = 0;
     }
 
     void DetectPlatform()
@@ -88,6 +112,47 @@ public class PlayerController : MonoBehaviour
 
         CheckSlope(hits);
         CheckPlatform(hits);
+    }
+
+    void CheckHang()
+    {
+           if(IsHang)
+            return;
+        IsHang = false;
+        Vector2 pos;
+        float inputX = 1;
+        if (Inputx != 0)
+            inputX = Inputx;
+        pos.x = this.transform.position.x + inputX * this.CheckWallOffset.x;
+        pos.y = this.transform.position.y +  this.CheckWallOffset.y;
+
+#if UNITY_EDITOR
+        Debug.DrawRay(pos, Vector2.right * inputX, Color.green);
+        #endif
+        RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.right * inputX, 1);
+        if (hit.collider != null)
+            return;
+        if (!IsWall)
+            return;
+        if (IsGround)
+            return;
+        IsHang = true;
+        Movement.Set(Rigi.velocity.x, 0);
+        Rigi.velocity = new Vector2(Rigi.velocity.x,0);
+       
+    }
+
+    bool CheckWall()
+    {
+        #if UNITY_EDITOR
+        Debug.DrawRay((Vector2)this.transform.position + Inputx * this.CheckWallOffset * Vector2.right, Vector2.right * Inputx , Color.green);
+        #endif
+        RaycastHit2D hit = Physics2D.Raycast((Vector2)this.transform.position + Inputx *this.CheckWallOffset * Vector2.right, Vector2.right * Inputx, 1);
+        if (hit.collider == null)
+            return false;
+        if (hit.normal != Vector2.left && hit.normal != Vector2.right)
+            return false;
+        return true;
     }
 
     void CheckPlatform(RaycastHit2D[] hits)
@@ -124,6 +189,7 @@ public class PlayerController : MonoBehaviour
 
     void BetterJUmp()
     {
+      
         if (IsGround)
         {
             if (!IsSlope)
@@ -136,10 +202,15 @@ public class PlayerController : MonoBehaviour
             }
         }else if (!IsGround)
         {
-            Movement.Set(Inputx * Speed.x, Rigi.velocity.y);
+            if(!IsWall && !IsHang)
+                Movement.Set(Inputx * Speed.x, Rigi.velocity.y);
         }
         
         Rigi.velocity = Movement;
+        if (IsWall || IsHang)
+        {
+            return;
+        }
         if (Rigi.velocity.y < 0)
         {
             Rigi.velocity += Vector2.up * Physics2D.gravity.y * fallMultipler * Time.deltaTime;
@@ -148,6 +219,12 @@ public class PlayerController : MonoBehaviour
 
     void DefineState()
     {
+        if (STATE == PlayerState.CLIMB)
+        {
+            Anim_Control.SetBool(STATE.ToString(), true);
+            return;
+        }
+           
         //State
         if (IsGround)
         {
@@ -160,15 +237,18 @@ public class PlayerController : MonoBehaviour
                 STATE = PlayerState.IDLE;
             }
         }
-        else
+        else 
         {
-            STATE = PlayerState.JUMP;
+            if(IsHang)
+                STATE = PlayerState.HANG;
+            else
+                STATE = PlayerState.JUMP;
         }
      
         //
 
         //
-        for (int i = 0; i<= 5; i++)
+        for (int i = 0; i<= 6; i++)
         {
             string anim = ((PlayerState)i).ToString(); 
             if((int)STATE == i)
@@ -191,12 +271,25 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void ClimbDone()
+    {
+        
+        this.transform.position += (Vector3)OffsetClimb;
+        Rigi.velocity = Vector2.zero;
+        Rigi.gravityScale = 1;
+        IsHang = false;
+        IsGround = true;
+        STATE = PlayerState.IDLE;
+    }
+
     public enum PlayerState
     {
         IDLE,
         RUN,
         JUMP,
         FALL,
-        D_JUMP
+        D_JUMP,
+        HANG,
+        CLIMB,
     }
 }

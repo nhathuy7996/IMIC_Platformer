@@ -77,6 +77,8 @@
     <Compile Include="Assets\00 SCRIPT\PlayerController.cs" />
     <Compile Include="Assets\00 SCRIPT\Singleton.cs" />
     <Compile Include="Assets\00 SCRIPT\UI\MenuController.cs" />
+    <Compile Include="Assets\PathCreator\PathCreator.cs" />
+    <Compile Include="Assets\PathCreator\PathEditor.cs" />
     <Compile Include="Assets\UITween\Prefabs\Click Effect Pref\ClickedWaveAnimation.cs" />
     <Compile Include="Assets\UITween\ScenesExamplesScripts\ActivateOnEnable.cs" />
     <Compile Include="Assets\UITween\ScenesExamplesScripts\CreateAnimImage.cs" />

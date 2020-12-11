@@ -6,13 +6,17 @@ public class MovingPlatform : MonoBehaviour
 {
     [SerializeField] float Speed;
     int way = 1;
-    [SerializeField] List<Vector2> Point = new List<Vector2>();
+    [SerializeField] List<Vector3> Point = new List<Vector3>();
     [SerializeField] int CurrentIndex = 0;
+    PathCreator Path;
     // Start is called before the first frame update
     void Start()
     {
         //InvokeRepeating("ChangeDir",3,3);
+        Path = this.GetComponent<PathCreator>();
+        Point = Path.List_Points;
         this.transform.position = Point[CurrentIndex];
+
     }
 
     // Update is called once per frame
